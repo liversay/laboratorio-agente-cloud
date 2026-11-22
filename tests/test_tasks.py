@@ -25,7 +25,18 @@ class TestTasks(unittest.TestCase):
         completar_tarea(tareas, 3)
         self.assertEqual([t["titulo"] for t in pendientes(tareas, "ESTUDIO")], ["A"])
         self.assertEqual(len(pendientes(tareas)), 2)
+
+    def test_filtrar_categoria_inexistente(self):
+        tareas = []
+        agregar_tarea(tareas, "A", "Estudio")
         self.assertEqual(pendientes(tareas, "Otra"), [])
+
+    def test_filtrar_categoria_vacia_o_espacios(self):
+        tareas = []
+        agregar_tarea(tareas, "A", "Estudio")
+        agregar_tarea(tareas, "B", "Casa")
+        self.assertEqual(pendientes(tareas, ""), [])
+        self.assertEqual(pendientes(tareas, "   "), [])
 
     def test_completar_tarea(self):
         tareas = []
