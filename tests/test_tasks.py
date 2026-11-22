@@ -77,5 +77,32 @@ class TestTasks(unittest.TestCase):
             ],
         )
 
+    def test_eliminar_de_lista_vacia(self):
+        tareas = []
+        with self.assertRaises(ValueError) as ctx:
+            eliminar_tarea(tareas, 1)
+        self.assertEqual(str(ctx.exception), "Tarea no encontrada")
+        self.assertEqual(tareas, [])
+
+    def test_eliminar_dos_veces_el_mismo_id(self):
+        tareas = []
+        agregar_tarea(tareas, "A", "Estudio")
+        agregar_tarea(tareas, "B", "Casa")
+        primera = eliminar_tarea(tareas, 1)
+        self.assertEqual(primera["id"], 1)
+        copia = [dict(t) for t in tareas]
+        with self.assertRaises(ValueError) as ctx:
+            eliminar_tarea(tareas, 1)
+        self.assertEqual(str(ctx.exception), "Tarea no encontrada")
+        self.assertEqual(tareas, copia)
+
+    def test_eliminar_del_medio_conserva_orden(self):
+        tareas = []
+        for titulo in ["A", "B", "C", "D"]:
+            agregar_tarea(tareas, titulo, "Estudio")
+        eliminar_tarea(tareas, 2)
+        self.assertEqual([t["titulo"] for t in tareas], ["A", "C", "D"])
+        self.assertEqual([t["id"] for t in tareas], [1, 3, 4])
+
 if __name__ == "__main__":
     unittest.main()
